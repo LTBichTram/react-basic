@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
-import AddUser from './components/Users/AddUser/AddUser';
-import UsersList from './components/Users/UsersList/UsersList';
+import React, { useState, Fragment, useEffect } from 'react'
+import MainHeader from './components/MainHeader/MainHeader'
+import Home from './components/Home/Home'
+import Login from './components/Login/Login'
 
-function App() {
-  const [users, setUsers] = useState([]);
-  const addUserHandler = dataUser => {
-    setUsers(preUser => {
-      return [
-        ...preUser,
-        {userName: dataUser.userName, userAge: dataUser.userAge, id: Math.random().toString()}
-      ]
-    })
+const App = () => {
+  const [isLogin, setIsLogin] = useState(false)
+  const loginHandler = (email, password) => {
+    setIsLogin(true)
+    localStorage.setItem('isLogin', '1')
+  }
+  const logoutHandler = () => {
+    setIsLogin(false)
+    localStorage.removeItem('isLogin')
   }
 
   return (
-    <div className='App'>
-      <AddUser onAddUser={addUserHandler}/>
-      <UsersList users={users}/>
-    </div>
-  );
+    <>
+      <MainHeader isAuthenticated={isLogin} onLogout={logoutHandler}/>
+      <main>
+        {isLogin && <Home/>}
+        {!isLogin && <Login onLogin={loginHandler}/>}
+      </main>
+    </>
+  )
 }
-export default App;
+
+export default App

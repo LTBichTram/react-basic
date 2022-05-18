@@ -18,5 +18,9 @@ code {
 
 html {
   font-family: sans-serif;
-  background: #1f1f1f;
+  background: #fff;
+}
+
+main {
+  margin-top: 6rem;
 }
