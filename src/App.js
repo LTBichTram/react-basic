@@ -1,25 +1,18 @@
-import React, { useState, Fragment, useEffect } from 'react'
+import React, { useContext } from 'react'
 import MainHeader from './components/MainHeader/MainHeader'
 import Home from './components/Home/Home'
 import Login from './components/Login/Login'
+import AuthContext from './store/auth-context'
 
 const App = () => {
-  const [isLogin, setIsLogin] = useState(false)
-  const loginHandler = (email, password) => {
-    setIsLogin(true)
-    localStorage.setItem('isLogin', '1')
-  }
-  const logoutHandler = () => {
-    setIsLogin(false)
-    localStorage.removeItem('isLogin')
-  }
+  const authCtx = useContext(AuthContext)
 
   return (
     <>
-      <MainHeader isAuthenticated={isLogin} onLogout={logoutHandler}/>
+      <MainHeader/>
       <main>
-        {isLogin && <Home/>}
-        {!isLogin && <Login onLogin={loginHandler}/>}
+        {!authCtx.isLogedIn && <Login/>}
+        {authCtx.isLogedIn && <Home/>}
       </main>
     </>
   )

@@ -1,127 +1,105 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useContext, useState, useReducer, useEffect, useRef } from 'react'
+import AuthContext from '../../store/auth-context'
 import Card from '../UI/Card/Card'
 import Button from '../UI/Button/Button'
+import Input from '../UI/Input/Input'
 import classes from './Login.module.css'
 
 const emailInit = {
-    val: '',
+    value: '',
     isValid: undefined,
 }
 const passwordInit = {
-    val: '',
+    value: '',
     isValid: undefined,
 }
 const USER_INPUT = 'USER_INPUT'
 const INPUT_BLUR = 'INPUT_BLUR'
 const emailReducer = (state, action) => {
-    if(action.type === USER_INPUT)
-    {
-        return {
-            val: action.val,
-            isValid: action.val.includes('@')
-        }
-    } else if(action.type === INPUT_BLUR)
-    {
-        return {
-            val: state.val,
-            isValid: state.val.includes('@')
-        }
+    if(action.type === USER_INPUT) {
+        return ({value: action.val, isValid: action.val.includes('@')})
+    } else if(action.type === INPUT_BLUR) {
+        return ({value: state.value, isValid: state.value.includes('@')})
     }
+    return ({value: '', isValid: false})
 }
 const passwordReducer = (state, action) => {
-    if(action.type === USER_INPUT)
-    {
-        return {
-            val: action.val,
-            isValid: action.val.trim().length >= 6
-        }
-    } else if(action.type === INPUT_BLUR)
-    {
-        return {
-            val: state.val,
-            isValid: state.val.trim().length >= 6
-        }
+    if(action.type === USER_INPUT) {
+        return ({value: action.val, isValid: action.val.trim().length >= 6})
+    } else if(action.type === INPUT_BLUR) {
+        return ({value: state.value, isValid: state.value.trim().length >= 6})
     }
+    return ({value: '', isValid: false})
 }
 
-const Login = props => {
+const Login = () => {
+    const authCtx = useContext(AuthContext)
     const [emailState, dispatchEmail] = useReducer(emailReducer, emailInit)
     const [passwordState, dispatchPassword] = useReducer(passwordReducer, passwordInit)
-    const [isValidForm, setIsValidForm] = useState(false)
+    const [formIsValid, setFormIsValid] = useState(false)
     const {isValid: emailIsValid} = emailState
     const {isValid: passwordIsValid} = passwordState
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsValidForm(emailIsValid && passwordIsValid)
-            console.log('Checking invalid')
-        }, 500)
-        return () => {
-            console.log('CLEAR-UP')
-            clearTimeout(timer)
-        }
-    }, [emailIsValid, passwordIsValid])
-
+    const emailRef = useRef()
+    const passwordRef = useRef()
     const changeEmailHandler = e => {
-        dispatchEmail({
-            type: USER_INPUT,
-            val: e.target.value,
-        })
-        setIsValidForm(e.target.value.includes('@') && emailState.isValid)
+        dispatchEmail({val: e.target.value, type: USER_INPUT})
     }
     const changePasswordHandler = e => {
-        dispatchPassword({
-            type: USER_INPUT,
-            val: e.target.value,
-        })
-        setIsValidForm(emailState.isValid && e.target.value.trim().length >= 6)
+        dispatchPassword({val: e.target.value, type: USER_INPUT})
     }
-    const validateEmail = e => {
-        dispatchEmail({
-            type: INPUT_BLUR,
-            val: emailState.val,
-        })
+    const validateEmail = () => {
+        dispatchEmail({type: INPUT_BLUR})
     }
-    const validatePassword = e => {
-        dispatchPassword({
-            type: INPUT_BLUR,
-            val: passwordState.val,
-        })
+    const validatePassword = () => {
+        dispatchPassword({type: INPUT_BLUR})
     }
     const submitHandler = e => {
         e.preventDefault()
-        console.log(emailState, passwordState)
-        props.onLogin(emailState, passwordState)
+        if(formIsValid) {
+            authCtx.onLogin(emailState.value, passwordState.value)
+        } else if(!emailIsValid) {
+            emailRef.current.focus()
+        } else {
+            passwordRef.current.focus()
+        }
     }
+
+    useEffect(() => {
+        const authenticate = setTimeout(() => {
+            setFormIsValid(emailIsValid && passwordIsValid)
+            console.log('Cheack Invalid')
+        }, 500)
+        return () => {
+            clearTimeout(authenticate)
+            console.log('CLEAR-UP')
+        }
+    }, [emailIsValid, passwordIsValid])
 
   return (
     <Card className={classes.login}>
         <form onSubmit={submitHandler}>
-            <div className={`${classes.control} ${emailState.isValid === false ? classes.invalid : ''}`}>
-                <label>Email</label>
-                <input
-                    type='email'
-                    value={emailState.val}
-                    onChange={changeEmailHandler}
-                    onBlur={validateEmail}
-                />
-            </div>
-            <div className={`${classes.control} ${passwordState.isValid === false ? classes.invalid : ''}`}>
-                <label>Password</label>
-                <input
-                    type='password'
-                    value={passwordState.val}
-                    onChange={changePasswordHandler}
-                    onBlur={validatePassword}
-                />
-            </div>
+            <Input
+                ref={emailRef}
+                id='email'
+                label='Email'
+                type='email'
+                isValid={emailIsValid}
+                value={emailState.value}
+                onChange={changeEmailHandler}
+                onBlur={validateEmail}
+            />
+            <Input
+                ref={passwordRef}
+                id='password'
+                label='Password'
+                type='password'
+                isValid={passwordIsValid}
+                value={passwordState.value}
+                onChange={changePasswordHandler}
+                onBlur={validatePassword}
+            />
             <div className={classes.actions}>
-                <Button
-                    type='submit'
-                    disabled={!isValidForm}
-                >
-                    Login
-                </Button>
+                <Button type='submit'>Login</Button>
             </div>
         </form>
     </Card>
