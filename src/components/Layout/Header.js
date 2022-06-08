@@ -11,7 +11,7 @@ const Header = props => {
             <HeaderCartButton onShowCart={props.onShowCart}/>
         </header>
         <div className={classes['main-image']}>
-            <img src={mealsImg} alt='A table full of food'></img>
+            <img src={mealsImg} alt='A table of full food'></img>
         </div>
     </>
   )
