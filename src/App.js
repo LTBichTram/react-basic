@@ -1,10 +1,14 @@
+import React from 'react'
+import ForwardCounter from './components/ForwardCounter'
+import BackwardCounter from './components/BackwardCounter'
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      Hello Word!!!
-    </div>
+    <>
+     <ForwardCounter/>
+     <BackwardCounter/>
+    </>
   );
 }
 
