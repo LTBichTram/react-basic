@@ -1,9 +1,12 @@
+// import SimpleInput from './components/SimpleInput'
+import BasicForm from './components/BasicForm'
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      Hello Word!!!
+    <div className='app'>
+      {/* <SimpleInput/> */}
+      <BasicForm/>
     </div>
   );
 }
