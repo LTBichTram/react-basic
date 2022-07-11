@@ -25,9 +25,9 @@ const Counter = () => {
         <h1>redux counter</h1>
         {showCounter && <div className={classes.value}>{counter}</div>}
         <div>
-            <button onClick={incrementHanlder}>Increment</button>
-            <button onClick={increaseHanlder}>Increase</button>
-            <button onClick={decrementHandler}>Decrement</button>
+            <button onClick={incrementHanlder}>Increase</button>
+            <button onClick={increaseHanlder}>Increase by 10</button>
+            <button onClick={decrementHandler}>Decrease</button>
         </div>
         <button onClick={toggleCounterHandler}>Toggle Counter</button>
     </div>
