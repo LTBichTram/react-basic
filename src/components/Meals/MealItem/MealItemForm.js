@@ -5,10 +5,19 @@ import styles from "./MealItemForm.module.css";
 
 const MealItemForm = (props) => {
   const inputRef = useRef(null);
+  const checkNumber = (envent) => {
+    // envent = envent ? envent : window.event;
+    var charCode = envent.which ? envent.which : envent.keyCode;
+    if (charCode > 48 && charCode < 54) {
+      return;
+    }
+    envent.preventDefault();
+  };
   const submitHandler = (e) => {
     e.preventDefault();
     const enteredAmount = +inputRef.current.value;
     props.onAddItem(enteredAmount);
+    inputRef.current.value = 1;
   };
 
   return (
@@ -17,7 +26,11 @@ const MealItemForm = (props) => {
         ref={inputRef}
         label="Amount"
         input={{
-          type: "number",
+          type: "text",
+          onKeyPress: (e) => {
+            return checkNumber(e);
+          },
+          maxLength: "1",
           min: "1",
           max: "5",
           step: "1",
