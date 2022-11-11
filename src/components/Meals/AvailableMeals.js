@@ -1,36 +1,39 @@
+import { useState, useEffect } from "react";
+
 import Card from "../UI/Card";
 import styles from "./AvailableMeals.module.css";
 import MealItem from "./MealItem/MealItem";
-
-const DUMMY_MEALS = [
-  {
-    id: "m1",
-    name: "Sushi",
-    description: "Finest fish and veggies",
-    price: 22.99,
-  },
-  {
-    id: "m2",
-    name: "Schnitzel",
-    description: "A german specialty!",
-    price: 16.5,
-  },
-  {
-    id: "m3",
-    name: "Barbecue Burger",
-    description: "American, raw, meaty",
-    price: 12.99,
-  },
-  {
-    id: "m4",
-    name: "Green Bowl",
-    description: "Healthy...and green...",
-    price: 18.99,
-  },
-];
+import useHttp from "../../hooks/use-http";
 
 const AvailableMeals = () => {
-  const mealsList = DUMMY_MEALS.map((meal) => (
+  const [meals, setMeals] = useState([]);
+  const { isLoading, error, sendRequest: fetchMeals } = useHttp();
+  const convertData = (dataMeals) => {
+    const loadData = [];
+    for (const key in dataMeals) {
+      loadData.push({
+        id: key,
+        name: dataMeals[key].name,
+        description: dataMeals[key].description,
+        price: dataMeals[key].price,
+      });
+    }
+    setMeals(loadData);
+    console.log(loadData);
+  };
+
+  useEffect(() => {
+    fetchMeals(
+      {
+        url: "https://food-order-app-27b9f-default-rtdb.firebaseio.com/meals.json",
+      },
+      (dataMeals) => {
+        convertData(dataMeals);
+      }
+    );
+  }, [fetchMeals]);
+
+  const mealsList = meals.map((meal) => (
     <MealItem
       key={meal.id}
       id={meal.id}
@@ -41,9 +44,15 @@ const AvailableMeals = () => {
   ));
 
   return (
-    <Card className={styles.meals}>
-      <ul>{mealsList}</ul>
-    </Card>
+    <>
+      {isLoading && <p className={styles.MealsLoading}>Loading...</p>}
+      {!isLoading && !error && (
+        <Card className={styles.meals}>
+          <ul>{mealsList}</ul>
+        </Card>
+      )}
+      {error && <p className={styles.MealsError}>{error}</p>}
+    </>
   );
 };
 
