@@ -5,7 +5,10 @@
   animation: meals-appear 1s ease-out forwards;
 }
 
+.noMeals,
+.MealsError,
 .MealsLoading {
+  margin-top: 2rem;
   text-align: center;
   color: white;
 }

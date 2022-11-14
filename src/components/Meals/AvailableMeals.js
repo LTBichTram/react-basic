@@ -19,7 +19,6 @@ const AvailableMeals = () => {
       });
     }
     setMeals(loadData);
-    console.log(loadData);
   };
 
   useEffect(() => {
@@ -33,24 +32,33 @@ const AvailableMeals = () => {
     );
   }, [fetchMeals]);
 
-  const mealsList = meals.map((meal) => (
-    <MealItem
-      key={meal.id}
-      id={meal.id}
-      name={meal.name}
-      description={meal.description}
-      price={meal.price}
-    />
-  ));
+  let mealsList;
+  if (!isLoading && !error) {
+    if (meals.length > 0) {
+      mealsList = (
+        <Card className={styles.meals}>
+          <ul>
+            {meals.map((meal) => (
+              <MealItem
+                key={meal.id}
+                id={meal.id}
+                name={meal.name}
+                description={meal.description}
+                price={meal.price}
+              />
+            ))}
+          </ul>
+        </Card>
+      );
+    } else {
+      mealsList = <p className={styles.noMeals}>No meals found!</p>;
+    }
+  }
 
   return (
     <>
       {isLoading && <p className={styles.MealsLoading}>Loading...</p>}
-      {!isLoading && !error && (
-        <Card className={styles.meals}>
-          <ul>{mealsList}</ul>
-        </Card>
-      )}
+      {mealsList}
       {error && <p className={styles.MealsError}>{error}</p>}
     </>
   );
