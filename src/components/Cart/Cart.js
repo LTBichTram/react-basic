@@ -4,10 +4,13 @@ import CartContext from "../../store/cart-context";
 import Modal from "../UI/Modal";
 import styles from "./Cart.module.css";
 import CartItem from "./CartItem";
+import Checkout from "./Checkout";
 
 const Cart = (props) => {
   const cartCtx = useContext(CartContext);
   const [isCheckOrder, setIsCheckOrder] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [didSubmit, setDidSubmit] = useState(false);
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
   const cartList = cartCtx.items.map((item) => (
     <CartItem
@@ -18,6 +21,24 @@ const Cart = (props) => {
       amount={item.amount}
     />
   ));
+  const callOrderHandler = (
+    <div className={styles.actions}>
+      <button className={styles["button--alt"]} onClick={props.onClose}>
+        Close
+      </button>
+      <button
+        className={styles.button}
+        disabled={isCheckOrder}
+        onClick={(e) => {
+          e.preventDefault();
+          setIsSubmit(true);
+        }}
+      >
+        Order
+      </button>
+    </div>
+  );
+  const orderHandler = (dataOrder) => {};
 
   useEffect(() => {
     if (cartCtx.items.length === 0) {
@@ -32,18 +53,11 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      <div className={styles.actions}>
-        <button className={styles["button--alt"]} onClick={props.onClose}>
-          Close
-        </button>
-        <button
-          className={styles.button}
-          disabled={isCheckOrder}
-          onClick={() => alert("hi")}
-        >
-          Order
-        </button>
-      </div>
+      {isSubmit ? (
+        <Checkout onClose={props.onClose} onOrder={orderHandler} />
+      ) : (
+        callOrderHandler
+      )}
     </Modal>
   );
 };

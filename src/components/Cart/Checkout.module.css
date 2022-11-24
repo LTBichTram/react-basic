@@ -1,0 +1,90 @@
+.form {
+  overflow: auto;
+}
+
+.control {
+  position: relative;
+  width: 20rem;
+  margin-bottom: 1.5rem;
+}
+
+.control label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.control input {
+  width: 100%;
+  font: inherit;
+  border-bottom: 1px solid #b0b0a6;
+  padding: 0.2rem 0;
+}
+
+input ~ .focus-input {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  transition: 0.4s;
+  background-color: #8a2b06;
+}
+
+input:focus ~ .focus-input {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 20rem;
+  height: 2px;
+  transition: 0.4s;
+  z-index: 99;
+}
+
+.control .errors {
+  position: absolute;
+}
+
+.actions {
+  text-align: right;
+}
+
+.actions button {
+  font: inherit;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid #8a2b06;
+  padding: 0.5rem 2rem;
+  border-radius: 25px;
+  margin-left: 1rem;
+}
+
+.actions button:hover,
+.actions button:active {
+  background-color: #5a1a01;
+  border-color: #5a1a01;
+  color: white;
+}
+
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.actions .button--alt {
+  color: #8a2b06;
+}
+
+.actions .submit {
+  background-color: #8a2b06;
+  color: white;
+}
+
+.invalid label {
+  color: #ca3e51;
+}
+
+.invalid input {
+  border-color: #aa0b20;
+  background-color: #ffeff1;
+}
